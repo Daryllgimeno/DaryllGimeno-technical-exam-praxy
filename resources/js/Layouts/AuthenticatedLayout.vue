@@ -1,5 +1,6 @@
 <script setup>
 import { Link, useForm } from '@inertiajs/vue3'
+import { Home, Package, Play, User, Settings, LogOut } from '@iconoir/vue'
 
 const form = useForm({})
 
@@ -11,56 +12,63 @@ const logout = () => {
 <template>
   <div class="min-h-screen bg-gray-100 flex">
     <!-- Sidebar -->
-    <aside class="flex flex-col justify-between h-screen w-60 bg-gray-800 text-white">
+    <aside class="flex flex-col justify-between h-screen w-64 bg-gray-800 text-white">
       <div>
         <div class="p-4 text-2xl font-bold text-center border-b border-gray-700">
-   
-            Hello, {{ $page.props.auth.user?.name || 'Guest' }}
-        
+          Hello, {{ $page.props.auth.user?.name || 'Guest' }}
         </div>
-        <nav class="px-4 py-6 space-y-2">
-          <Link href="/dashboard" class="block px-3 py-2 rounded hover:bg-gray-700">Dashboard</Link>
-          <Link href="/products" class="block px-3 py-2 rounded hover:bg-gray-700">Products</Link>
-          <Link href="/videeos" class="block px-3 py-2 rounded hover:bg-gray-700">Videos</Link>
-          <Link href="/users" class="block px-3 py-2 rounded hover:bg-gray-700">Users</Link>
-          <Link href="/settings" class="block px-3 py-2 rounded hover:bg-gray-700">Settings</Link>
+
+        <nav class="px-4 py-6 space-y-4">
+          <Link href="/dashboard" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 transition">
+            <Home class="w-7 h-7 mr-3" />
+            <span class="text-lg">Dashboard</span>
+          </Link>
+
+          <Link href="/products" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 transition">
+            <Package class="w-7 h-7 mr-3" />
+            <span class="text-lg">Products</span>
+          </Link>
+
+          <Link href="/videos" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 transition">
+            <Play class="w-7 h-7 mr-3" />
+            <span class="text-lg">Videos</span>
+          </Link>
+
+          <Link href="/users" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 transition">
+            <User class="w-7 h-7 mr-3" />
+            <span class="text-lg">Users</span>
+          </Link>
+
+          <Link href="/settings" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 transition">
+            <Settings class="w-7 h-7 mr-3" />
+            <span class="text-lg">Settings</span>
+          </Link>
         </nav>
       </div>
 
-
-    <div class="p-4 border-t border-gray-700">
-  <button
-    @click="logout"
-    class="w-full flex items-center gap-2 px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-    :disabled="form.processing"
-  >
-   
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-      viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="round" stroke-linejoin="round"
-        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 
-           01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h5a2 
-           2 0 012 2v1" />
-    </svg>
-    Logout
-  </button>
-</div>
-
+      <!-- Logout Button -->
+      <div class="p-4 border-t border-gray-700">
+        <button
+          @click="logout"
+          class="w-full flex items-center px-3 py-2 gap-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-lg"
+          :disabled="form.processing"
+        >
+          <LogOut class="w-7 h-7 mr-2" />
+          Logout
+        </button>
+      </div>
     </aside>
 
     <!-- Main content -->
     <div class="flex-1 flex flex-col">
       <!-- Top Navbar -->
       <header class="bg-white shadow flex items-center justify-between px-6 py-4">
-        <h1 class="text-lg font-semibold">Product Management System</h1>
-        <div class="flex items-center space-x-4">
-     
-        </div>
+        <h1 class="text-xl font-semibold">Product Management System</h1>
+        <div class="flex items-center space-x-4"></div>
       </header>
 
       <!-- Page Content -->
       <main class="flex-1 p-6 bg-gray-100">
-      
         <slot v-if="$slots.default" />
         <div v-else class="text-gray-500 text-center py-10">No content available</div>
       </main>
