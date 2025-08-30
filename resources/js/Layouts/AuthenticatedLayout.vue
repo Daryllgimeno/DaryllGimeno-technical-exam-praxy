@@ -29,7 +29,8 @@ const logout = () => {
       <header class="bg-white shadow flex items-center justify-between px-6 py-4">
         <h1 class="text-lg font-semibold">Product Management System</h1>
         <div class="flex items-center space-x-4">
-          <span class="text-gray-600">Hello, User</span>
+          <span class="text-gray-600">Hello, {{ $page.props.auth.user.name }}</span>
+
           <button
             @click="logout"
             class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
