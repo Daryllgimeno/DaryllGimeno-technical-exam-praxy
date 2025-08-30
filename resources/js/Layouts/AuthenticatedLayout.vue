@@ -21,7 +21,7 @@ const logout = () => {
         <nav class="px-4 py-6 space-y-2">
           <Link href="/dashboard" class="block px-3 py-2 rounded hover:bg-gray-700">Dashboard</Link>
           <Link href="/products" class="block px-3 py-2 rounded hover:bg-gray-700">Products</Link>
-         <Link href="/videeos" class="block px-3 py-2 rounded hover:bg-gray-700">Videos</Link>
+          <Link href="/videeos" class="block px-3 py-2 rounded hover:bg-gray-700">Videos</Link>
           <Link href="/users" class="block px-3 py-2 rounded hover:bg-gray-700">Users</Link>
           <Link href="/settings" class="block px-3 py-2 rounded hover:bg-gray-700">Settings</Link>
         </nav>
