@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         // login seeder
         $this->call([
             LoginSeeder::class,
+            ProductSeeder::class,
         ]);
     }
 }
