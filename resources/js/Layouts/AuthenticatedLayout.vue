@@ -11,7 +11,7 @@ const logout = () => {
 <template>
   <div class="min-h-screen bg-gray-100 flex">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-900 text-white flex flex-col">
+    <aside class="#">
       <div class="p-4 text-2xl font-bold text-center border-b border-gray-700">
         PMS
       </div>
