@@ -4,27 +4,27 @@ import { Head } from '@inertiajs/vue3';
 </script>
 
 <template>
-    <Head title="Dashboard" />
+  <Head title="Dashboard" />
 
-    <AuthenticatedLayout>
-        <template #header>
-            <h2
-                class="text-xl font-semibold leading-tight text-gray-800"
-            >
-                Dashboard
-            </h2>
-        </template>
-
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div
-                    class="overflow-hidden bg-white shadow-sm sm:rounded-lg"
-                >
-                    <div class="p-6 text-gray-900">
-                        You're logged in!
-                    </div>
-                </div>
-            </div>
-        </div>
-    </AuthenticatedLayout>
+  <AuthenticatedLayout>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Small box -->
+      <div class="bg-blue-500 text-white p-6 rounded-lg shadow">
+        <h3 class="text-2xl font-bold">150</h3>
+        <p>Products</p>
+      </div>
+      <div class="bg-green-500 text-white p-6 rounded-lg shadow">
+        <h3 class="text-2xl font-bold">53</h3>
+        <p>Users</p>
+      </div>
+      <div class="bg-yellow-500 text-white p-6 rounded-lg shadow">
+        <h3 class="text-2xl font-bold">44</h3>
+        <p>Orders</p>
+      </div>
+      <div class="bg-red-500 text-white p-6 rounded-lg shadow">
+        <h3 class="text-2xl font-bold">65</h3>
+        <p>Errors</p>
+      </div>
+    </div>
+  </AuthenticatedLayout>
 </template>
