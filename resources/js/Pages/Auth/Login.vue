@@ -29,16 +29,19 @@ const submit = () => {
   <GuestLayout>
     <Head title="Log in" />
 
-    <div class="max-w-md w-full bg-white shadow-lg rounded-lg p-8">
-      <h2 class="text-2xl font-bold text-center text-gray-900 mb-6">Welcome to Product Management System</h2>
+    <div class="max-w-md w-full">
+     
+      <h2 class="text-2xl font-bold text-center text-gray-900 mb-6">
+        Welcome to Product Management System
+      </h2>
 
-      <!-- Status Message -->
+      
       <div v-if="status" class="mb-4 text-sm font-medium text-green-600 text-center">
         {{ status }}
       </div>
 
       <form @submit.prevent="submit" class="space-y-6">
-        <!-- Username / Email -->
+    
         <div>
           <InputLabel for="login" value="Username or Email" />
           <TextInput
@@ -53,7 +56,6 @@ const submit = () => {
           <InputError class="mt-1" :message="form.errors.login" />
         </div>
 
-        <!-- Password -->
         <div>
           <InputLabel for="password" value="Password" />
           <TextInput
@@ -67,13 +69,12 @@ const submit = () => {
           <InputError class="mt-1" :message="form.errors.password" />
         </div>
 
-        <!-- Remember Me -->
         <div class="flex items-center">
           <Checkbox name="remember" v-model:checked="form.remember" />
           <span class="ml-2 text-sm text-gray-600">Remember me</span>
         </div>
 
-        <!-- Actions -->
+      
         <div class="flex items-center justify-between">
           <Link
             v-if="canResetPassword"
