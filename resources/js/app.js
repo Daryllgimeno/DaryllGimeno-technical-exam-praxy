@@ -5,9 +5,10 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
-
+import axios from 'axios';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
+axios.defaults.withCredentials = true;
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) =>

@@ -30,7 +30,12 @@ class LoginRequest extends FormRequest
 
         $loginType = filter_var($this->input('login'), FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        if (! Auth::attempt([$loginType => $this->input('login'), 'password' => $this->input('password')], $this->boolean('remember'))) {
+        // ✅ Log the remember value
+        $remember = $this->boolean('remember');
+        info('LoginRequest: Remember Me value', ['login' => $this->input('login'), 'remember' => $remember]);
+
+        // Attempt login with remember
+        if (! Auth::attempt([$loginType => $this->input('login'), 'password' => $this->input('password')], $remember)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
