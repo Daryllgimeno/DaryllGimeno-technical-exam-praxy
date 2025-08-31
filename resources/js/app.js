@@ -26,7 +26,7 @@ createInertiaApp({
                     IconoirProvider,
                     {},
                     {
-                        default: () => h(App, props) // correct slot usage
+                        default: () => h(App, props) 
                     }
                 ),
         })
