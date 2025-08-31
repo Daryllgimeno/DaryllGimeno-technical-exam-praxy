@@ -22,9 +22,9 @@ class ProductController extends Controller
         }
 
         // Filter by category
-        if ($request->category_id) {
-            $query->where('category_id', $request->category_id);
-        }
+        if ($request->category) {
+        $query->where('category', $request->category);
+    }
 
         // Paginate results (10 per page)
         $products = $query->paginate(10);
