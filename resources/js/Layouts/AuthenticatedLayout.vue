@@ -33,9 +33,9 @@ const logout = () => {
 
           <!-- Create Product -->
           <Link href="/products/create" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 transition">
-            <Plus class="w-7 h-7 mr-3" />
-            <span class="text-lg">Create Product</span>
-          </Link>
+  <Plus class="w-7 h-7 mr-3" />
+  <span class="text-lg">Create Product</span>
+</Link>
 
           <!-- Videos -->
           <Link href="/videos" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 transition">

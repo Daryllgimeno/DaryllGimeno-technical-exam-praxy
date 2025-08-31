@@ -9,6 +9,14 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public function create()
+{
+   $categories = Product::select('category')->distinct()->pluck('category');
+
+    return inertia('Products/CreateProduct', [
+        'categories' => $categories
+    ]);
+}
     public function index(Request $request)
     {
         $query = Product::query();
@@ -30,6 +38,23 @@ class ProductController extends Controller
         $products = $query->paginate(10);
 
         return response()->json($products);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'date_time' => 'nullable|date',
+        ]);
+
+        $product = Product::create($request->all());
+
+        return response()->json([
+            'message' => 'Product created successfully',
+            'data' => $product
+        ], 201);
     }
 
     public function destroy($id)
