@@ -6,7 +6,7 @@ import axios from 'axios'
 const products = ref({ data: [], current_page: 1, last_page: 1 })
 const selectedCategory = ref('')
 const keyword = ref('')
-
+const allCategories = ref([]); 
 // Computed property for unique categories
 const categories = computed(() => {
   return [...new Set(products.value.data.map(p => p.category))]
@@ -22,6 +22,10 @@ const fetchProducts = async (page = 1) => {
     }
   })
   products.value = response.data
+
+  if (allCategories.value.length === 0) {
+    allCategories.value = [...new Set(response.data.data.map(p => p.category))];
+  }
 }
 
 // Load products on mount
@@ -58,9 +62,9 @@ const deleteProduct = async (id) => {
       />
 
       <select v-model="selectedCategory" @change="fetchProducts">
-        <option value="">All Categories</option>
-        <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
-      </select>
+  <option value="">All Categories</option>
+  <option v-for="cat in allCategories" :key="cat" :value="cat">{{ cat }}</option>
+</select>
     </div>
 
     <!-- Product Table -->
