@@ -40,22 +40,42 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'date_time' => 'nullable|date',
-        ]);
+   public function store(Request $request)
+{
+    // Validation
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'category' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'date_time' => 'nullable|date',
+        'images.*' => 'image|mimes:jpg,jpeg,png|max:2048', // multiple images
+    ]);
 
-        $product = Product::create($request->all());
+    $images = [];
 
-        return response()->json([
-            'message' => 'Product created successfully',
-            'data' => $product
-        ], 201);
+    // Handle uploaded images
+    if ($request->hasFile('images')) {
+        foreach ($request->file('images') as $file) {
+            // Store each file in storage/app/public/products
+            $path = $file->store('products', 'public');
+            $images[] = $path;
+        }
     }
+
+    // Create product with images
+    $product = Product::create([
+        'name' => $request->name,
+        'category' => $request->category,
+        'description' => $request->description,
+        'date_time' => $request->date_time,
+        'images' => $images, 
+    ]);
+
+    return response()->json([
+        'message' => 'Product created successfully',
+        'data' => $product
+    ], 201);
+}
 
     public function destroy($id)
     {

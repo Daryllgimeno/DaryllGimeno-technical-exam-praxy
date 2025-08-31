@@ -15,5 +15,9 @@ class Product extends Model
         'category',
         'description',
         'date_time',
+        'images',
     ];
+    protected $casts = [
+    'images' => 'array',
+];
 }
