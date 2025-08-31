@@ -67,6 +67,7 @@ onMounted(() => fetchProducts())
             <td class="p-2 border">{{ product.category }}</td>
             <td class="p-2 border">
               <button @click="deleteProduct(product.id)" class="text-red-500">Delete</button>
+              
             </td>
           </tr>
         </tbody>

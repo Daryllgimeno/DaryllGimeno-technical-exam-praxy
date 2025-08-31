@@ -1,6 +1,6 @@
 <script setup>
 import { Link, useForm } from '@inertiajs/vue3'
-import { Home, Package, Play, User, Settings, LogOut } from '@iconoir/vue'
+import { Home, Package, Play, User, Settings, LogOut, Plus } from '@iconoir/vue'
 
 const form = useForm({})
 
@@ -19,26 +19,37 @@ const logout = () => {
         </div>
 
         <nav class="px-4 py-6 space-y-4">
+          <!-- Dashboard -->
           <Link href="/dashboard" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 transition">
             <Home class="w-7 h-7 mr-3" />
             <span class="text-lg">Dashboard</span>
           </Link>
 
+          <!-- Product List -->
           <Link href="/products" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 transition">
             <Package class="w-7 h-7 mr-3" />
             <span class="text-lg">Products</span>
           </Link>
 
+          <!-- Create Product -->
+          <Link href="/products/create" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 transition">
+            <Plus class="w-7 h-7 mr-3" />
+            <span class="text-lg">Create Product</span>
+          </Link>
+
+          <!-- Videos -->
           <Link href="/videos" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 transition">
             <Play class="w-7 h-7 mr-3" />
             <span class="text-lg">Videos</span>
           </Link>
 
+          <!-- Users -->
           <Link href="/users" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 transition">
             <User class="w-7 h-7 mr-3" />
             <span class="text-lg">Users</span>
           </Link>
 
+          <!-- Settings -->
           <Link href="/settings" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 transition">
             <Settings class="w-7 h-7 mr-3" />
             <span class="text-lg">Settings</span>
