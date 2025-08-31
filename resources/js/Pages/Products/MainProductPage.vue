@@ -50,27 +50,32 @@ onMounted(() => fetchProducts())
 
       <!-- Product Table -->
       <table class="w-full border">
-        <thead>
-          <tr class="bg-gray-200">
-            <th class="p-2 border">ID</th>
-            <th class="p-2 border">Name</th>
-            <th class="p-2 border">Description</th>
-            <th class="p-2 border">Category</th>
-            <th class="p-2 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="product in products.data" :key="product.id">
-            <td class="p-2 border">{{ product.id }}</td>
-            <td class="p-2 border">{{ product.name }}</td>
-            <td class="p-2 border">{{ product.description }}</td>
-            <td class="p-2 border">{{ product.category }}</td>
-            <td class="p-2 border">
-              <button @click="deleteProduct(product.id)" class="text-red-500">Delete</button>
-              
-            </td>
-          </tr>
-        </tbody>
+    <thead>
+  <tr class="bg-gray-200">
+    <th class="p-2 border">ID</th>
+    <th class="p-2 border">Name</th>
+    <th class="p-2 border">Description</th>
+    <th class="p-2 border">Category</th>
+    <th class="p-2 border">Images</th>
+    <th class="p-2 border">Date & Time</th>
+    <th class="p-2 border">Actions</th>
+  </tr>
+</thead>
+      <tbody>
+  <tr v-for="product in products.data" :key="product.id">
+    <td class="p-2 border">{{ product.id }}</td>
+    <td class="p-2 border">{{ product.name }}</td>
+    <td class="p-2 border">{{ product.description }}</td>
+    <td class="p-2 border">{{ product.category }}</td>
+    <td class="p-2 border flex gap-1">
+      <img v-for="img in product.images" :key="img" :src="`/storage/${img}`" class="w-16 h-16 object-cover border rounded" />
+    </td>
+    <td class="p-2 border">{{ product.date_time ? new Date(product.date_time).toLocaleString() : '-' }}</td>
+    <td class="p-2 border">
+      <button @click="deleteProduct(product.id)" class="text-red-500">Delete</button>
+    </td>
+  </tr>
+</tbody>
       </table>
 
       <!-- Pagination -->
