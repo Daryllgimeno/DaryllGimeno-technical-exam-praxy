@@ -1,3 +1,48 @@
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import axios from 'axios'
+
+// Reactive state
+const products = ref({ data: [], current_page: 1, last_page: 1 })
+const selectedCategory = ref('')
+const keyword = ref('')
+
+// Computed property for unique categories
+const categories = computed(() => {
+  return [...new Set(products.value.data.map(p => p.category))]
+})
+
+// Fetch products
+const fetchProducts = async (page = 1) => {
+  const response = await axios.get('/api/products', {
+    params: {
+      keyword: keyword.value,
+      category: selectedCategory.value,
+      page: page
+    }
+  })
+  products.value = response.data
+}
+
+// Load products on mount
+onMounted(() => {
+  fetchProducts()
+})
+
+// Delete product
+const deleteProduct = async (id) => {
+  if (confirm("Are you sure you want to delete this product?")) {
+    try {
+      await axios.delete(`/api/products/${id}`)
+      fetchProducts(products.value.current_page)
+    } catch (error) {
+      console.error(error)
+      alert("Failed to delete the product.")
+    }
+  }
+}
+</script>
+
 <template>
   <div class="p-6">
     <h1 class="text-xl font-bold mb-4">Product List</h1>
@@ -12,9 +57,9 @@
         class="border p-2 rounded"
       />
 
-      <select v-model="selectedCategory" @change="fetchProducts" class="border p-2 rounded">
+      <select v-model="selectedCategory" @change="fetchProducts">
         <option value="">All Categories</option>
-        <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+        <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
       </select>
     </div>
 
@@ -34,8 +79,7 @@
           <td class="p-2 border">{{ product.id }}</td>
           <td class="p-2 border">{{ product.name }}</td>
           <td class="p-2 border">{{ product.description }}</td>
-         <td class="p-2 border">{{ product.category }}</td>
-
+          <td class="p-2 border">{{ product.category }}</td>
           <td class="p-2 border">
             <button @click="deleteProduct(product.id)" class="text-red-500">Delete</button>
           </td>
@@ -57,50 +101,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import axios from "axios";
-
-export default {
-  data() {
-    return {
-      products: { data: [], current_page: 1, last_page: 1 },
-      keyword: "",
-      selectedCategory: "",
-      categories: [],
-    };
-  },
-  mounted() {
-    this.fetchCategories();
-    this.fetchProducts();
-  },
-  methods: {
-    async fetchProducts(page = 1) {
-      const response = await axios.get("/api/products", {
-        params: {
-          keyword: this.keyword,
-          category_id: this.selectedCategory,
-          page: page,
-        },
-      });
-      this.products = response.data;
-    },
-    async fetchCategories() {
-      const response = await axios.get("/api/categories"); // create API if needed
-      this.categories = response.data;
-    },
-   async deleteProduct(id) {
-  if (confirm("Are you sure you want to delete this product?")) {
-    try {
-      await axios.delete(`/api/products/${id}`);
-      this.fetchProducts(this.products.current_page); 
-    } catch (error) {
-      console.error(error);
-      alert("Failed to delete the product.");
-    }
-  }
-}
-
-  },
-};
-</script>
