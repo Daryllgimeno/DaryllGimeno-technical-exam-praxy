@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-// Default route → redirect to login
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -15,7 +15,7 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/products', function () {
-        return inertia('Products/Index');
+        return inertia('Products/MainProductPage');
     })->name('products.index');
 });
 
