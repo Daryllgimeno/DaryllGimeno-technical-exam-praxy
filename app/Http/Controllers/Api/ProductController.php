@@ -24,24 +24,30 @@ class ProductController extends Controller
     /**
      * List products with optional search and filter
      */
-    public function index(Request $request)
-    {
-        $query = Product::query();
+   public function index(Request $request)
+{
+    $query = Product::query();
 
-        if ($request->filled('keyword')) {
-            $query->where(fn($q) => $q->where('name', 'like', "%{$request->keyword}%")
-            ->orWhere('description', 'like', "%{$request->keyword}%"));
-        }
+    if ($request->filled('keyword')) {
+        $terms = explode(' ', $request->keyword); 
 
-        if ($request->filled('category')) {
-            $query->where('category', $request->category);
-        }
-
-        $products = $query->paginate(10);
-
-        return response()->json($products);
-
+        $query->where(function($q) use ($terms) {
+            foreach ($terms as $term) {
+                $q->orWhere('name', 'like', "%{$term}%")
+                  ->orWhere('description', 'like', "%{$term}%");
+            }
+        });
     }
+
+    if ($request->filled('category')) {
+        $query->where('category', $request->category);
+    }
+
+    $products = $query->paginate(10);
+
+    return response()->json($products);
+}
+
 
     /**
      * Store a new product
