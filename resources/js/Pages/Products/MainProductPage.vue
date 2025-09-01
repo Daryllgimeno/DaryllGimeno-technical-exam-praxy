@@ -1,8 +1,9 @@
 <script setup>
 import AuthenticatedPageLayout from '@/Layouts/AuthenticatedLayout.vue'
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { router } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
 
 // Reactive state
 const products = ref({ data: [], current_page: 1, last_page: 1 })
@@ -16,20 +17,32 @@ const showModal = ref(false)
 const modalImage = ref('')
 const modalAlt = ref('')
 
-// Fetch products
+// Fetch products with optional category filter
 const fetchProducts = async (page = 1) => {
   loading.value = true
   try {
-    const response = await axios.get('/api/products', {
-      params: { keyword: keyword.value, category: selectedCategory.value, page }
+    const res = await axios.get('/api/products', {
+      params: {
+        keyword: keyword.value,
+        category: selectedCategory.value,
+        page
+      }
     })
-    products.value = response.data
-
-    if (!allCategories.value.length) {
-      allCategories.value = [...new Set(response.data.data.map(p => p.category))]
-    }
+    products.value = res.data
+  } catch (err) {
+    console.error('Failed to fetch products', err)
   } finally {
     loading.value = false
+  }
+}
+
+// Fetch categories from API
+const fetchCategories = async () => {
+  try {
+    const res = await axios.get('/api/categories')
+    allCategories.value = res.data
+  } catch (err) {
+    console.error('Failed to fetch categories', err)
   }
 }
 
@@ -45,44 +58,36 @@ const editProduct = (id) => {
   router.get(`/products/${id}/edit`)
 }
 
-// Open modal
+// Modal functions
 const openModal = (img, name) => {
   modalImage.value = `/storage/${img}`
   modalAlt.value = name
   showModal.value = true
 }
+const closeModal = () => showModal.value = false
 
-// Close modal
-const closeModal = () => {
-  showModal.value = false
-}
-
-// Close modal on Esc
-const handleEsc = (e) => {
-  if (e.key === 'Escape') closeModal()
-}
-
-// Clear search input
+// Clear search
 const clearSearch = () => {
   keyword.value = ''
   fetchProducts()
 }
 
-
+// On mount: fetch products AND categories
 onMounted(() => {
   fetchProducts()
-
+  fetchCategories()
 })
-
 </script>
+
 
 <template>
   <AuthenticatedPageLayout>
     <template #default>
       <div class="max-w-6xl mx-auto px-4 py-4">
 
-        <!-- Search & Filter -->
-        <div class="flex items-center gap-2 mb-4">
+        <!-- Search, Category & Create Button -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+          <!-- Search input -->
           <div class="relative">
             <input
               v-model="keyword"
@@ -100,14 +105,24 @@ onMounted(() => {
               ✕
             </button>
           </div>
-          <select
-            v-model="selectedCategory"
-            @change="fetchProducts"
-            class="border p-2 rounded w-40 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+
+         <!-- Category select -->
+<select
+  v-model="selectedCategory"
+  @change="fetchProducts"
+  class="border p-2 rounded w-40 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+>
+  <option value="">All Categories</option>
+  <option v-for="cat in allCategories" :key="cat" :value="cat">{{ cat }}</option>
+</select>
+
+          <!-- Create Product button -->
+          <Link
+            href="/products/create"
+            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition text-sm"
           >
-            <option value="">All Categories</option>
-            <option v-for="cat in allCategories" :key="cat" :value="cat">{{ cat }}</option>
-          </select>
+            Create Product
+          </Link>
         </div>
 
         <!-- Loading Spinner -->
