@@ -41,23 +41,21 @@ onMounted(() => fetchProducts())
 <template>
   <AuthenticatedPageLayout>
     <template #default>
-
-      <!-- Main content wrapper aligned with sidebar -->
       <div class="max-w-6xl mx-auto px-4">
 
         <!-- Search & Filter -->
-        <div class="flex mb-4 gap-4">
+        <div class="flex flex-col md:flex-row mb-4 gap-2">
           <input
             v-model="keyword"
             @input="fetchProducts"
             type="text"
             placeholder="Search by name or description"
-            class="border p-2 rounded flex-1"
+            class="border p-1 rounded flex-1 text-sm"
           />
           <select
             v-model="selectedCategory"
             @change="fetchProducts"
-            class="border p-2 rounded"
+            class="border p-1 rounded text-sm"
           >
             <option value="">All Categories</option>
             <option v-for="cat in allCategories" :key="cat" :value="cat">{{ cat }}</option>
@@ -65,46 +63,46 @@ onMounted(() => fetchProducts())
         </div>
 
         <!-- Product Table -->
-        <div class="overflow-x-auto">
-          <table class="w-full border">
+        <div class="overflow-x-auto border rounded">
+          <table class="w-full border text-sm">
             <thead>
-              <tr class="bg-gray-200">
-                <th class="p-2 border">ID</th>
-                <th class="p-2 border">Name</th>
-                <th class="p-2 border">Description</th>
-                <th class="p-2 border">Category</th>
-                <th class="p-2 border">Images</th>
-                <th class="p-2 border">Date & Time</th>
-                <th class="p-2 border">Actions</th>
+              <tr class="bg-gray-200 text-xs">
+                <th class="p-1 border">ID</th>
+                <th class="p-1 border">Name</th>
+                <th class="p-1 border">Description</th>
+                <th class="p-1 border">Category</th>
+                <th class="p-1 border">Images</th>
+                <th class="p-1 border">Date & Time</th>
+                <th class="p-1 border">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="product in products.data" :key="product.id">
-                <td class="p-2 border">{{ product.id }}</td>
-                <td class="p-2 border">{{ product.name }}</td>
-                <td class="p-2 border">{{ product.description }}</td>
-                <td class="p-2 border">{{ product.category }}</td>
-                <td class="p-2 border flex gap-1">
+                <td class="p-1 border">{{ product.id }}</td>
+                <td class="p-1 border">{{ product.name }}</td>
+                <td class="p-1 border">{{ product.description }}</td>
+                <td class="p-1 border">{{ product.category }}</td>
+                <td class="p-1 border flex gap-1">
                   <img
                     v-for="img in product.images"
                     :key="img"
                     :src="`/storage/${img}`"
-                    class="w-16 h-16 object-cover border rounded"
+                    class="w-10 h-10 object-cover border rounded"
                   />
                 </td>
-                <td class="p-2 border">
+                <td class="p-1 border">
                   {{ product.date_time ? new Date(product.date_time).toLocaleString() : '-' }}
                 </td>
-                <td class="p-2 border flex gap-2">
+                <td class="p-1 border flex gap-1">
                   <button
                     @click="editProduct(product.id)"
-                    class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-0.5 rounded text-xs"
                   >
                     Edit
                   </button>
                   <button
                     @click="deleteProduct(product.id)"
-                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                    class="bg-red-500 hover:bg-red-600 text-white px-2 py-0.5 rounded text-xs"
                   >
                     Delete
                   </button>
@@ -114,15 +112,15 @@ onMounted(() => fetchProducts())
           </table>
         </div>
 
-       
-        <div class="mt-4 flex justify-end">
-          <div class="flex gap-2">
+        <!-- Pagination -->
+        <div class="mt-2 flex justify-end">
+          <div class="flex gap-1">
             <button
               v-for="page in products.last_page"
               :key="page"
               @click="fetchProducts(page)"
-              :class="{ 'font-bold': page === products.current_page }"
-              class="p-2 border rounded"
+              :class="{ 'font-bold bg-gray-200': page === products.current_page }"
+              class="p-1 border rounded text-sm"
             >
               {{ page }}
             </button>
