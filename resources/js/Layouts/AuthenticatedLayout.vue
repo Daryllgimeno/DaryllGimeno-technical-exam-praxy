@@ -72,11 +72,7 @@ const logout = () => {
 
     <!-- Main content -->
     <div class="flex-1 flex flex-col">
-      <!-- Top Navbar -->
-      <header class="bg-white shadow flex items-center justify-between px-6 py-4">
-        <h1 class="text-xl font-semibold">Product Management System</h1>
-        <div class="flex items-center space-x-4"></div>
-      </header>
+     
 
       <!-- Page Content -->
       <main class="flex-1 p-6 bg-gray-100">

@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedPageLayout from '@/Layouts/AuthenticatedLayout.vue'
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { router } from '@inertiajs/vue3'
 
@@ -9,9 +9,6 @@ const products = ref({ data: [], current_page: 1, last_page: 1 })
 const selectedCategory = ref('')
 const keyword = ref('')
 const allCategories = ref([])
-
-// Computed unique categories
-const categories = computed(() => [...new Set(products.value.data.map(p => p.category))])
 
 // Fetch products
 const fetchProducts = async (page = 1) => {
@@ -34,8 +31,7 @@ const deleteProduct = async (id) => {
 
 // Edit product
 const editProduct = (id) => {
-  // Redirect to Create/Edit page using Inertia
-   router.get(`/products/${id}/edit`)
+  router.get(`/products/${id}/edit`)
 }
 
 // On mounted
@@ -45,53 +41,94 @@ onMounted(() => fetchProducts())
 <template>
   <AuthenticatedPageLayout>
     <template #default>
-      <h1 class="text-xl font-bold mb-4">Product List</h1>
 
-      <!-- Search & Filter -->
-      <div class="flex mb-4 gap-4">
-        <input v-model="keyword" @input="fetchProducts" type="text" placeholder="Search by name or description" class="border p-2 rounded" />
-        <select v-model="selectedCategory" @change="fetchProducts" class="border p-2 rounded">
-          <option value="">All Categories</option>
-          <option v-for="cat in allCategories" :key="cat" :value="cat">{{ cat }}</option>
-        </select>
-      </div>
+      <!-- Main content wrapper aligned with sidebar -->
+      <div class="max-w-6xl mx-auto px-4">
 
-      <!-- Product Table -->
-      <table class="w-full border">
-        <thead>
-          <tr class="bg-gray-200">
-            <th class="p-2 border">ID</th>
-            <th class="p-2 border">Name</th>
-            <th class="p-2 border">Description</th>
-            <th class="p-2 border">Category</th>
-            <th class="p-2 border">Images</th>
-            <th class="p-2 border">Date & Time</th>
-            <th class="p-2 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="product in products.data" :key="product.id">
-            <td class="p-2 border">{{ product.id }}</td>
-            <td class="p-2 border">{{ product.name }}</td>
-            <td class="p-2 border">{{ product.description }}</td>
-            <td class="p-2 border">{{ product.category }}</td>
-            <td class="p-2 border flex gap-1">
-              <img v-for="img in product.images" :key="img" :src="`/storage/${img}`" class="w-16 h-16 object-cover border rounded" />
-            </td>
-            <td class="p-2 border">{{ product.date_time ? new Date(product.date_time).toLocaleString() : '-' }}</td>
-            <td class="p-2 border flex gap-1">
-              <button @click="editProduct(product.id)" class="text-blue-500">Edit</button>
-              <button @click="deleteProduct(product.id)" class="text-red-500">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <!-- Search & Filter -->
+        <div class="flex mb-4 gap-4">
+          <input
+            v-model="keyword"
+            @input="fetchProducts"
+            type="text"
+            placeholder="Search by name or description"
+            class="border p-2 rounded flex-1"
+          />
+          <select
+            v-model="selectedCategory"
+            @change="fetchProducts"
+            class="border p-2 rounded"
+          >
+            <option value="">All Categories</option>
+            <option v-for="cat in allCategories" :key="cat" :value="cat">{{ cat }}</option>
+          </select>
+        </div>
 
-      <!-- Pagination -->
-      <div class="mt-4 flex gap-2">
-        <button v-for="page in products.last_page" :key="page" @click="fetchProducts(page)" :class="{ 'font-bold': page === products.current_page }" class="p-2 border rounded">
-          {{ page }}
-        </button>
+        <!-- Product Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full border">
+            <thead>
+              <tr class="bg-gray-200">
+                <th class="p-2 border">ID</th>
+                <th class="p-2 border">Name</th>
+                <th class="p-2 border">Description</th>
+                <th class="p-2 border">Category</th>
+                <th class="p-2 border">Images</th>
+                <th class="p-2 border">Date & Time</th>
+                <th class="p-2 border">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="product in products.data" :key="product.id">
+                <td class="p-2 border">{{ product.id }}</td>
+                <td class="p-2 border">{{ product.name }}</td>
+                <td class="p-2 border">{{ product.description }}</td>
+                <td class="p-2 border">{{ product.category }}</td>
+                <td class="p-2 border flex gap-1">
+                  <img
+                    v-for="img in product.images"
+                    :key="img"
+                    :src="`/storage/${img}`"
+                    class="w-16 h-16 object-cover border rounded"
+                  />
+                </td>
+                <td class="p-2 border">
+                  {{ product.date_time ? new Date(product.date_time).toLocaleString() : '-' }}
+                </td>
+                <td class="p-2 border flex gap-2">
+                  <button
+                    @click="editProduct(product.id)"
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    @click="deleteProduct(product.id)"
+                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+       
+        <div class="mt-4 flex justify-end">
+          <div class="flex gap-2">
+            <button
+              v-for="page in products.last_page"
+              :key="page"
+              @click="fetchProducts(page)"
+              :class="{ 'font-bold': page === products.current_page }"
+              class="p-2 border rounded"
+            >
+              {{ page }}
+            </button>
+          </div>
+        </div>
+
       </div>
     </template>
   </AuthenticatedPageLayout>
