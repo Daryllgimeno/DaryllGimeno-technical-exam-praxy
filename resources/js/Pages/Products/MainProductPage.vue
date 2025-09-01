@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedPageLayout from '@/Layouts/AuthenticatedLayout.vue'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import axios from 'axios'
 import { router } from '@inertiajs/vue3'
 
@@ -9,6 +9,10 @@ const products = ref({ data: [], current_page: 1, last_page: 1 })
 const selectedCategory = ref('')
 const keyword = ref('')
 const allCategories = ref([])
+
+// Modal state
+const showModal = ref(false)
+const modalImage = ref('')
 
 // Fetch products
 const fetchProducts = async (page = 1) => {
@@ -34,8 +38,30 @@ const editProduct = (id) => {
   router.get(`/products/${id}/edit`)
 }
 
-// On mounted
-onMounted(() => fetchProducts())
+// Open modal
+const openModal = (img) => {
+  modalImage.value = `/storage/${img}`
+  showModal.value = true
+}
+
+// Close modal
+const closeModal = () => {
+  showModal.value = false
+}
+
+// Close modal on Esc
+const handleEsc = (e) => {
+  if (e.key === 'Escape') closeModal()
+}
+
+// Add/remove event listener
+onMounted(() => {
+  fetchProducts()
+  window.addEventListener('keydown', handleEsc)
+})
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleEsc)
+})
 </script>
 
 <template>
@@ -43,7 +69,7 @@ onMounted(() => fetchProducts())
     <template #default>
       <div class="max-w-6xl mx-auto px-4">
 
-        <!-- Search & Filter (compact, top-left) -->
+        <!-- Search & Filter -->
         <div class="flex items-center mb-4 gap-2">
           <input
             v-model="keyword"
@@ -87,7 +113,8 @@ onMounted(() => fetchProducts())
                     v-for="img in product.images"
                     :key="img"
                     :src="`/storage/${img}`"
-                    class="w-10 h-10 object-cover border rounded"
+                    class="w-10 h-10 object-cover border rounded cursor-pointer"
+                    @click="openModal(img)"
                   />
                 </td>
                 <td class="p-1 border">
@@ -124,6 +151,23 @@ onMounted(() => fetchProducts())
             >
               {{ page }}
             </button>
+          </div>
+        </div>
+
+        <!-- Image Modal -->
+        <div
+          v-if="showModal"
+          class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          @click.self="closeModal"
+        >
+          <div class="bg-white p-2 rounded relative max-w-3xl w-full">
+            <button
+              class="absolute top-1 right-1 text-black font-bold px-2 py-1"
+              @click="closeModal"
+            >
+              X
+            </button>
+            <img :src="modalImage" class="w-full h-auto object-contain" />
           </div>
         </div>
 
