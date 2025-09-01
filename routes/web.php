@@ -2,31 +2,34 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\DashboardController;
 use Illuminate\Support\Facades\Route;
 
-
+// Redirect root to login
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Dashboard route
-Route::get('/dashboard', function () {
-    return inertia('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
+// Authenticated routes
 Route::middleware(['auth', 'verified'])->group(function () {
+
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
+    // Products pages
     Route::get('/products', function () {
         return inertia('Products/MainProductPage');
     })->name('products.index');
-});
 
-// Authenticated routes
-Route::middleware('auth')->group(function () {
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::get('/products/{id}/edit', [ProductController::class, 'edit']);
+
+    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-     Route::get('/products/{id}/edit', [ProductController::class, 'edit']);
 });
 
 require __DIR__.'/auth.php';
