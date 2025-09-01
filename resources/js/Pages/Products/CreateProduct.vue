@@ -105,10 +105,16 @@ export default {
     prevStep() {
       this.step -= 1;
     },
-    handleFiles(e) {
-      this.form.images = Array.from(e.target.files);
-      this.previews = this.form.images.map(file => URL.createObjectURL(file));
-    },
+  handleFiles(e) {
+  const newFiles = Array.from(e.target.files);
+
+  // Append new files to existing ones
+  this.form.images = [...this.form.images, ...newFiles];
+
+  // Update previews
+  this.previews = this.form.images.map(file => URL.createObjectURL(file));
+},
+
     async submitForm() {
       try {
         const formData = new FormData();
