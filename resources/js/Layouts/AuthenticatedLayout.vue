@@ -12,7 +12,10 @@ const logout = () => {
 <template>
   <div class="min-h-screen bg-gray-100 flex">
     <!-- Sidebar -->
-    <aside class="flex flex-col justify-between h-screen w-64 bg-gray-800 text-white">
+  <aside class="flex flex-col justify-between h-screen w-64 bg-slate-800 text-white">
+
+
+
       <div>
         <div class="p-4 text-2xl font-bold text-center border-b border-gray-700">
           Hello, {{ $page.props.auth.user?.name || 'Guest' }}
