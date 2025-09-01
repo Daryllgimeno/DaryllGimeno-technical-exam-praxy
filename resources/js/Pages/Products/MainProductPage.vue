@@ -43,19 +43,19 @@ onMounted(() => fetchProducts())
     <template #default>
       <div class="max-w-6xl mx-auto px-4">
 
-        <!-- Search & Filter -->
-        <div class="flex flex-col md:flex-row mb-4 gap-2">
+        <!-- Search & Filter (compact, top-left) -->
+        <div class="flex items-center mb-4 gap-2">
           <input
             v-model="keyword"
             @input="fetchProducts"
             type="text"
-            placeholder="Search by name or description"
-            class="border p-1 rounded flex-1 text-sm"
+            placeholder="Search..."
+            class="border p-1 rounded text-sm w-64"
           />
           <select
             v-model="selectedCategory"
             @change="fetchProducts"
-            class="border p-1 rounded text-sm"
+            class="border p-1 rounded text-sm w-40"
           >
             <option value="">All Categories</option>
             <option v-for="cat in allCategories" :key="cat" :value="cat">{{ cat }}</option>
