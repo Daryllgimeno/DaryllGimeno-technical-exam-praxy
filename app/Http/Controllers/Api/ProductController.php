@@ -76,6 +76,52 @@ class ProductController extends Controller
         'data' => $product
     ], 201);
 }
+public function edit($id)
+{
+    $product = Product::findOrFail($id);
+    $categories = Product::select('category')->distinct()->pluck('category');
+
+    return inertia('Products/EditProduct', [
+        'product' => $product,
+        'categories' => $categories,
+    ]);
+}
+
+public function update(Request $request, $id)
+{
+    $product = Product::findOrFail($id);
+
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'category' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'date_time' => 'nullable|date',
+        'images.*' => 'image|mimes:jpg,jpeg,png|max:2048',
+    ]);
+
+    // Handle images if uploaded
+    $images = $product->images ?? [];
+    if ($request->hasFile('images')) {
+        foreach ($request->file('images') as $file) {
+            $images[] = $file->store('products', 'public');
+        }
+    }
+
+    $product->update([
+        'name' => $request->name,
+        'category' => $request->category,
+        'description' => $request->description,
+        'date_time' => $request->date_time,
+        'images' => $images,
+    ]);
+
+    return response()->json(['data' => $product, 'message' => 'Product updated']);
+}
+public function show($id)
+{
+    $product = Product::findOrFail($id);
+    return response()->json(['data' => $product]);
+}
 
     public function destroy($id)
     {
