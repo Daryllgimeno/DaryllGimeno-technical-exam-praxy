@@ -29,23 +29,24 @@
         <button @click="nextStep" class="bg-blue-500 text-white px-4 py-2 rounded">Next</button>
       </div>
 
-      <!-- Step 2 -->
-      <div v-if="step === 2">
-        <div class="mb-4">
-          <label class="block font-semibold">Images</label>
-          <input type="file" multiple @change="handleFiles" />
-          <span v-if="errors.images" class="text-red-500 text-sm">{{ errors.images }}</span>
-        </div>
+     <!-- Step 2 -->
+<div v-if="step === 2">
+  <div class="mb-4">
+    <label class="block font-semibold">Images</label>
+    <input type="file" multiple @change="handleFiles" class="border rounded p-2 w-full" />
+    <p class="text-sm text-gray-500 mt-1">You can select multiple pictures.</p>
+    <span v-if="errors.images" class="text-red-500 text-sm">{{ errors.images }}</span>
+  </div>
 
-        <div class="flex gap-2 flex-wrap mb-4">
-          <div v-for="(src, i) in previews" :key="i" class="w-24 h-24 border rounded overflow-hidden">
-            <img :src="src" class="object-cover w-full h-full" />
-          </div>
-        </div>
+  <div class="flex gap-2 flex-wrap mb-4">
+    <div v-for="(src, i) in previews" :key="i" class="w-24 h-24 border rounded overflow-hidden">
+      <img :src="src" class="object-cover w-full h-full" />
+    </div>
+  </div>
 
-        <button @click="prevStep" class="bg-gray-400 text-white px-4 py-2 rounded mr-2">Back</button>
-        <button @click="nextStep" class="bg-blue-500 text-white px-4 py-2 rounded">Next</button>
-      </div>
+  <button @click="prevStep" class="bg-gray-400 text-white px-4 py-2 rounded mr-2">Back</button>
+  <button @click="nextStep" class="bg-blue-500 text-white px-4 py-2 rounded">Next</button>
+</div>
 
       <!-- Step 3 -->
       <div v-if="step === 3">
@@ -105,7 +106,7 @@ export default {
     prevStep() {
       this.step -= 1;
     },
-  handleFiles(e) {
+ handleFiles(e) {
   const newFiles = Array.from(e.target.files);
 
   // Append new files to existing ones
