@@ -12,7 +12,10 @@ const logout = () => {
 <template>
   <div class="min-h-screen bg-gray-100 flex">
     <!-- Sidebar -->
-    <aside class="flex flex-col justify-between h-screen w-64 bg-gray-800 text-white">
+  <aside class="flex flex-col justify-between h-screen w-64 bg-slate-800 text-white">
+
+
+
       <div>
         <div class="p-4 text-2xl font-bold text-center border-b border-gray-700">
           Hello, {{ $page.props.auth.user?.name || 'Guest' }}
@@ -72,11 +75,7 @@ const logout = () => {
 
     <!-- Main content -->
     <div class="flex-1 flex flex-col">
-      <!-- Top Navbar -->
-      <header class="bg-white shadow flex items-center justify-between px-6 py-4">
-        <h1 class="text-xl font-semibold">Product Management System</h1>
-        <div class="flex items-center space-x-4"></div>
-      </header>
+     
 
       <!-- Page Content -->
       <main class="flex-1 p-6 bg-gray-100">

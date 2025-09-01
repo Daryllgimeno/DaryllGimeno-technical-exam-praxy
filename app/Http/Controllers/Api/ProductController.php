@@ -1,133 +1,137 @@
 <?php
 
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    /**
+     * Show form for creating a product
+     */
     public function create()
-{
-   $categories = Product::select('category')->distinct()->pluck('category');
-
-    return inertia('Products/CreateProduct', [
-        'categories' => $categories
-    ]);
-}
-    public function index(Request $request)
     {
-        $query = Product::query();
+        $categories = Product::select('category')->distinct()->pluck('category');
 
-        // Search by keyword
-        if ($request->keyword) {
-            $query->where(function($q) use ($request) {
-                $q->where('name', 'like', '%'.$request->keyword.'%')
-                  ->orWhere('description', 'like', '%'.$request->keyword.'%');
-            });
-        }
+        return inertia('Products/CreateProduct', [
+            'categories' => $categories
+        ]);
+    }
 
-        // Filter by category
-        if ($request->category) {
+    /**
+     * List products with optional search and filter
+     */
+   public function index(Request $request)
+{
+    $query = Product::query();
+
+    if ($request->filled('keyword')) {
+        $terms = explode(' ', $request->keyword); 
+
+        $query->where(function($q) use ($terms) {
+            foreach ($terms as $term) {
+                $q->orWhere('name', 'like', "%{$term}%")
+                  ->orWhere('description', 'like', "%{$term}%");
+            }
+        });
+    }
+
+    if ($request->filled('category')) {
         $query->where('category', $request->category);
     }
 
-        // Paginate results (10 per page)
-        $products = $query->paginate(10);
+    $products = $query->paginate(10);
 
-        return response()->json($products);
+    return response()->json($products);
+}
+
+
+    /**
+     * Store a new product
+     */
+    public function store(ProductRequest $request)
+    {
+        $validated = $request->validated();
+
+        $images = $this->handleImages($request);
+
+        $product = Product::create(array_merge($validated, ['images' => $images]));
+
+        return response()->json([
+            'message' => 'Product created successfully',
+            'data' => $product
+        ], 201);
     }
 
-   public function store(Request $request)
-{
-    // Validation
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'category' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'date_time' => 'nullable|date',
-        'images.*' => 'image|mimes:jpg,jpeg,png|max:2048', // multiple images
-    ]);
+    /**
+     * Show form to edit a product
+     */
+    public function edit($id)
+    {
+        $product = Product::findOrFail($id);
+        $categories = Product::select('category')->distinct()->pluck('category');
 
-    $images = [];
-
-    // Handle uploaded images
-    if ($request->hasFile('images')) {
-        foreach ($request->file('images') as $file) {
-            // Store each file in storage/app/public/products
-            $path = $file->store('products', 'public');
-            $images[] = $path;
-        }
+        return inertia('Products/EditProduct', [
+            'product' => $product,
+            'categories' => $categories,
+        ]);
     }
 
-    // Create product with images
-    $product = Product::create([
-        'name' => $request->name,
-        'category' => $request->category,
-        'description' => $request->description,
-        'date_time' => $request->date_time,
-        'images' => $images, 
-    ]);
+    /**
+     * Update a product
+     */
+    public function update(ProductRequest $request, $id)
+    {
+        $product = Product::findOrFail($id);
+        $validated = $request->validated();
 
-    return response()->json([
-        'message' => 'Product created successfully',
-        'data' => $product
-    ], 201);
-}
-public function edit($id)
-{
-    $product = Product::findOrFail($id);
-    $categories = Product::select('category')->distinct()->pluck('category');
+        // Merge existing images with new uploaded images
+        $images = array_merge($product->images ?? [], $this->handleImages($request));
 
-    return inertia('Products/EditProduct', [
-        'product' => $product,
-        'categories' => $categories,
-    ]);
-}
+        $product->update(array_merge($validated, ['images' => $images]));
 
-public function update(Request $request, $id)
-{
-    $product = Product::findOrFail($id);
-
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'category' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'date_time' => 'nullable|date',
-        'images.*' => 'image|mimes:jpg,jpeg,png|max:2048',
-    ]);
-
-    // Handle images if uploaded
-    $images = $product->images ?? [];
-    if ($request->hasFile('images')) {
-        foreach ($request->file('images') as $file) {
-            $images[] = $file->store('products', 'public');
-        }
+        return response()->json([
+            'message' => 'Product updated successfully',
+            'data' => $product
+        ]);
     }
 
-    $product->update([
-        'name' => $request->name,
-        'category' => $request->category,
-        'description' => $request->description,
-        'date_time' => $request->date_time,
-        'images' => $images,
-    ]);
+    /**
+     * Show a single product
+     */
+    public function show($id)
+    {
+        $product = Product::findOrFail($id);
+        return response()->json(['data' => $product]);
+    }
 
-    return response()->json(['data' => $product, 'message' => 'Product updated']);
-}
-public function show($id)
-{
-    $product = Product::findOrFail($id);
-    return response()->json(['data' => $product]);
-}
-
+    /**
+     * Delete a product
+     */
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
         $product->delete();
 
         return response()->json(['message' => 'Product deleted successfully']);
+    }
+
+    /**
+     * Handle uploaded images
+     */
+    private function handleImages(ProductRequest $request): array
+    {
+        $images = [];
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $images[] = $file->store('products', 'public');
+            }
+        }
+
+        return $images;
     }
 }
