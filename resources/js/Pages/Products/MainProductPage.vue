@@ -68,14 +68,12 @@ const clearSearch = () => {
   fetchProducts()
 }
 
-// Add/remove event listener
+
 onMounted(() => {
   fetchProducts()
-  window.addEventListener('keydown', handleEsc)
+
 })
-onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleEsc)
-})
+
 </script>
 
 <template>
