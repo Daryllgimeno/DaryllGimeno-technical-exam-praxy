@@ -46,17 +46,8 @@ const logout = () => {
             <span class="text-lg">Videos</span>
           </Link>
 
-          <!-- Users -->
-          <Link href="/users" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 transition">
-            <User class="w-7 h-7 mr-3" />
-            <span class="text-lg">Users</span>
-          </Link>
-
-          <!-- Settings -->
-          <Link href="/settings" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 transition">
-            <Settings class="w-7 h-7 mr-3" />
-            <span class="text-lg">Settings</span>
-          </Link>
+        
+       
         </nav>
       </div>
 
