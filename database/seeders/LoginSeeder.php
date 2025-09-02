@@ -15,11 +15,11 @@ class LoginSeeder extends Seeder
     {
       
         User::updateOrCreate(
-            ['email' => 'sample@sample.com'], 
+            ['email' => 'admin@admin.com'], 
             [
-                'username' => 'sample', 
-                'name' => 'sample', 
-                'password' => Hash::make('sample'), 
+                'username' => 'admin', 
+                'name' => 'admin', 
+                'password' => Hash::make('admin'), 
             ]
         );
     }
