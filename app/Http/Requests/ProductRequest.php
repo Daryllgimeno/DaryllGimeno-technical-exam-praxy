@@ -32,12 +32,12 @@ class ProductRequest extends FormRequest
     ];
 
     if ($this->isMethod('post')) {
-        // Create: require at least 1 image
+      
         $rules['images'] = 'required|array|min:1';
     } else {
-        // Edit: optional images, but total images (existing - removed + new) must be >=1
+      
         $rules['images'] = 'sometimes|array';
-        $rules['saved_images'] = 'sometimes|array|min:1'; // array of existing images that remain
+        $rules['saved_images'] = 'sometimes|array|min:1'; 
     }
 
     return $rules;

@@ -15,5 +15,5 @@ Route::post('/products', [ProductController::class, 'store']);       // Create p
 Route::delete('/products/{id}', [ProductController::class, 'destroy']); // Delete product
 Route::get('/products/{id}', [ProductController::class, 'show']);   // Get single product for edit
 Route::put('/products/{id}', [ProductController::class, 'update']); // Update product
-Route::get('/categories', [CategoryController::class, 'index']);
-Route::post('/products/bulk-delete', [ProductController::class, 'BulkDeletion']);
+Route::get('/categories', [CategoryController::class, 'index']); // categories
+Route::post('/products/bulk-delete', [ProductController::class, 'BulkDeletion']); // bulk delete
