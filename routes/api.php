@@ -16,3 +16,4 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy']); // Delet
 Route::get('/products/{id}', [ProductController::class, 'show']);   // Get single product for edit
 Route::put('/products/{id}', [ProductController::class, 'update']); // Update product
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::post('/products/bulk-delete', [ProductController::class, 'BulkDeletion']);

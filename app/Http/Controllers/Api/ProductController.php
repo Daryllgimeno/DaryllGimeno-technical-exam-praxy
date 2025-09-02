@@ -155,4 +155,15 @@ class ProductController extends Controller
 
         return $images;
     }
+    public function BulkDeletion(Request $request)
+{
+    $request->validate([
+        'ids' => 'required|array',
+        'ids.*' => 'integer|exists:products,id'
+    ]);
+
+    Product::whereIn('id', $request->ids)->delete();
+
+    return response()->json(['message' => 'Products deleted successfully']);
+}
 }
