@@ -171,39 +171,36 @@ export default {
       }
       this.previews.splice(index, 1);
     },
-    async submitForm() {
-  try {
-    const formData = new FormData();
-    formData.append("name", this.form.name);
-    formData.append("category", this.form.category);
-    formData.append("description", this.form.description);
-    formData.append("date_time", this.form.date_time);
-    this.form.images.forEach(img => formData.append("images[]", img));
-    this.removedImages.forEach(img => formData.append("removed_images[]", img));
-    const savedImages = this.previews.filter(p => p.existing).map(p => p.path);
-    savedImages.forEach(img => formData.append("saved_images[]", img));
+  async submitForm() {
+  const formData = new FormData();
+  formData.append("name", this.form.name);
+  formData.append("category", this.form.category);
+  formData.append("description", this.form.description);
+  formData.append("date_time", this.form.date_time);
+  this.form.images.forEach(img => formData.append("images[]", img));
+  this.removedImages.forEach(img => formData.append("removed_images[]", img));
+  const savedImages = this.previews.filter(p => p.existing).map(p => p.path);
+  savedImages.forEach(img => formData.append("saved_images[]", img));
 
-    await axios.post(`/api/products/${this.product.id}?_method=PUT`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-
+  axios.post(`/api/products/${this.product.id}?_method=PUT`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  })
+  .then(() => {
     alert("Product updated successfully!");
-    
     this.step = 1;
-
-   
-    
-  } catch (error) {
-    if (error.response && error.response.data.errors) this.errors = error.response.data.errors;
-    else console.error(error);
-  }
+  })
+  .catch(error => {
+    if (error.response && error.response.data.errors) {
+      this.errors = error.response.data.errors;
+    } else {
+      console.error(error);
+    }
+  });
 }
+
 
   },
 };
 </script>
 
-<style scoped>
-.w-24 { width: 6rem; }
-.h-24 { height: 6rem; }
-</style>
+
