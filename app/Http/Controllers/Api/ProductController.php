@@ -35,7 +35,7 @@ class ProductController extends Controller
         $query->where(function($q) use ($terms) {
             foreach ($terms as $term) {
                 $q->orWhere('name', 'like', "%{$term}%")
-                  ->orWhere('description', 'like', "%{$term}%");
+                ->orWhere('description', 'like', "%{$term}%");
             }
         });
     }
