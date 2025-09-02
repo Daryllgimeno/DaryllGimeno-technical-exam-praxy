@@ -49,6 +49,6 @@ onBeforeUnmount(() => {
 .video-js {
   width: 100%;
   height: auto;
-  max-height: 400px; /* Shrinks the video vertically */
+  max-height: 400px; 
 }
 </style>
