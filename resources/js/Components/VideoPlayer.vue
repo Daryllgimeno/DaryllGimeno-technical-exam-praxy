@@ -24,23 +24,24 @@ onMounted(() => {
     player.value.src(props.src);
 });
 
-// Watch for changes in src prop
 watch(() => props.src, (newSrc) => {
     if (player.value) {
         player.value.src(newSrc);
+        player.value.play();
     }
 });
 
 onBeforeUnmount(() => {
-    if (player.value) {
-        player.value.dispose();
-    }
+    if (player.value) player.value.dispose();
 });
 </script>
 
 <template>
-  <div>
-    <video ref="videoRef" class="video-js vjs-big-play-centered"></video>
+  <div class="rounded-lg overflow-hidden shadow-lg max-w-full">
+    <video
+      ref="videoRef"
+      class="video-js vjs-big-play-centered rounded-lg"
+    ></video>
   </div>
 </template>
 
@@ -48,5 +49,6 @@ onBeforeUnmount(() => {
 .video-js {
   width: 100%;
   height: auto;
+  max-height: 400px; /* Shrinks the video vertically */
 }
 </style>
