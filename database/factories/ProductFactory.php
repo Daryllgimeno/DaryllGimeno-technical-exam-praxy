@@ -14,7 +14,7 @@ class ProductFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+    public function definition(): array //factor for seeder i set it like a angriculture equipments
     {
         $categories = [
             'Feeds', 'Supplements', 'Medications', 'Vitamins',
