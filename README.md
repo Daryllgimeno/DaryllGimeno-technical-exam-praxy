@@ -1,4 +1,5 @@
 # DaryllGimeno Technical Exam - Praxy
+<img width="1355" height="628" alt="image" src="https://github.com/user-attachments/assets/9ad2692d-0ece-4852-8fe6-48be96b32bee" />
 
 A Laravel + Vue 3 + Inertia.js technical exam project with product management (CRUD), dashboard, authentication, and frontend
 ---
