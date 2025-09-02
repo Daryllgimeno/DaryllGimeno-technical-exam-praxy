@@ -28,7 +28,7 @@ class ProductController extends Controller
    public function index(Request $request)
 {
     $query = Product::query();
-
+    //validation
     if ($request->filled('keyword')) {
         $terms = explode(' ', $request->keyword); 
 
@@ -39,11 +39,9 @@ class ProductController extends Controller
             }
         });
     }
-
     if ($request->filled('category')) {
         $query->where('category', $request->category);
     }
-
     $products = $query->paginate(10);
 
     return response()->json($products);
@@ -53,7 +51,7 @@ class ProductController extends Controller
     /**
      * Store a new product
      */
-    public function store(ProductRequest $request)
+    public function store(ProductRequest $request)//Product request separate for validation
     {
         $validated = $request->validated();
 
@@ -143,6 +141,8 @@ class ProductController extends Controller
     /**
      * Handle uploaded images
      */
+
+    //for images in the mainproduct.vue
     private function handleImages(ProductRequest $request): array
     {
         $images = [];
@@ -155,6 +155,7 @@ class ProductController extends Controller
 
         return $images;
     }
+    //bulk delete in mainproduct vue 
     public function BulkDeletion(Request $request)
 {
     $request->validate([
