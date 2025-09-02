@@ -2,7 +2,6 @@
 import AuthenticatedPageLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { router } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/vue3'
 
 // Reactive state
@@ -79,11 +78,6 @@ const bulkDelete = async () => {
   }
 }
 
-// Edit product
-const editProduct = (id) => {
-  router.get(`/products/${id}/edit`)
-}
-
 // Modal
 const openModal = (img, name) => {
   modalImage.value = `/storage/${img}`
@@ -120,70 +114,67 @@ onMounted(() => {
     <div class="max-w-6xl mx-auto px-4 py-4">
 
       <!-- Search, Category & Buttons -->
-      <div class="flex flex-wrap items-center gap-2 mb-4">
-        <div class="relative">
-          <input
-            v-model="keyword"
-            @input="fetchProducts"
-            type="text"
-            placeholder="Search by name..."
-            class="border p-2 rounded w-64 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-          <button
-            v-if="keyword"
-            @click="clearSearch"
-            class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 px-1"
-          >
-            ✕
-          </button>
-        </div>
+<div class="flex flex-wrap items-center gap-2 mb-4">
+  
+  <!-- Search -->
+  <div class="relative">
+    <input
+      v-model="keyword"
+      @input="fetchProducts"
+      type="text"
+      placeholder="Search by name..."
+      class="border p-2 rounded w-64 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+    />
+    <button
+      v-if="keyword"
+      @click="clearSearch"
+      class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 px-1"
+    >
+      ✕
+    </button>
+  </div>
 
-        <select
-          v-model="selectedCategory"
-          @change="fetchProducts"
-          class="border p-2 rounded w-40 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-        >
-          <option value="">All Categories</option>
-          <option v-for="cat in allCategories" :key="cat" :value="cat">{{ cat }}</option>
-        </select>
+  <!-- Category -->
+  <select
+    v-model="selectedCategory"
+    @change="fetchProducts"
+    class="border p-2 rounded w-40 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+  >
+    <option value="">All Categories</option>
+    <option v-for="cat in allCategories" :key="cat" :value="cat">{{ cat }}</option>
+  </select>
 
-        <Link
-          href="/products/create"
-          class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition text-sm"
-        >
-          Create Product
-        </Link>
+  <!-- Create Product -->
+  <Link
+    href="/products/create"
+    class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition"
+  >
+    Create Product
+  </Link>
 
-        <!-- Toggle bulk mode -->
-        <button
-          @click="bulkMode = !bulkMode"
-          class="bg-red-500 text-white p-2 rounded hover:bg-red-600 transition"
-          :title="bulkMode ? 'Cancel Bulk Delete' : 'Bulk Delete'"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M6 2a1 1 0 011-1h6a1 1 0 011 1v1h5a1 1 0 110 2h-1v12a2 2 0 01-2 2H4a2 2 0 01-2-2V5H1a1 1 0 110-2h5V2zm2 3a1 1 0 012 0v8a1 1 0 11-2 0V5zm4 0a1 1 0 10-2 0v8a1 1 0 102 0V5z" clip-rule="evenodd" />
-          </svg>
-        </button>
+  <!-- Bulk Mode Toggle -->
+  <button
+    @click="bulkMode = !bulkMode"
+    :class="bulkMode ? 'bg-gray-500 hover:bg-gray-600' : 'bg-red-600 hover:bg-red-700'"
+    class="text-white px-3 py-1 text-sm rounded transition"
+  >
+    {{ bulkMode ? 'Cancel Bulk Delete' : 'Bulk Delete' }}
+  </button>
 
-        <!-- Delete selected button -->
-        <button
-          v-if="bulkMode"
-          @click="bulkDelete"
-          :disabled="!selectedProducts.length"
-          class="bg-red-500 text-white p-2 rounded hover:bg-red-600 transition disabled:opacity-50"
-          title="Delete Selected Products"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M6 2a1 1 0 011-1h6a1 1 0 011 1v1h5a1 1 0 110 2h-1v12a2 2 0 01-2 2H4a2 2 0 01-2-2V5H1a1 1 0 110-2h5V2zm2 3a1 1 0 012 0v8a1 1 0 11-2 0V5zm4 0a1 1 0 10-2 0v8a1 1 0 102 0V5z" clip-rule="evenodd" />
-          </svg>
-        </button>
-      </div>
+  <!-- Delete Selected -->
+  <button
+    v-if="bulkMode"
+    @click="bulkDelete"
+    :disabled="!selectedProducts.length"
+    class="bg-red-700 hover:bg-red-800 text-white px-3 py-1 text-sm rounded transition disabled:opacity-50"
+  >
+    Delete Selected
+  </button>
 
-      <!-- Loading Spinner -->
-      <div v-if="loading" class="flex justify-center py-4">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-      </div>
+</div>
 
+
+    
       <!-- Product Table -->
       <div class="overflow-x-auto border rounded shadow-sm">
         <table class="w-full border text-sm">
@@ -225,19 +216,21 @@ onMounted(() => {
               </td>
               <td class="p-2 border">{{ product.date_time ? new Date(product.date_time).toLocaleString() : '-' }}</td>
               <td class="p-2 border flex gap-1">
-                <button
-                  @click="editProduct(product.id)"
-                  class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs hover:shadow-md transition duration-200"
-                >
-                  Edit
-                </button>
-                <button
-                  @click="deleteProduct(product.id)"
-                  class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs hover:shadow-md transition duration-200"
-                >
-                  Delete
-                </button>
-              </td>
+  <Link
+    :href="`/products/${product.id}/edit`"
+    class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs hover:shadow-md transition duration-200"
+  >
+    Edit
+  </Link>
+
+  <button
+    @click="deleteProduct(product.id)"
+    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs hover:shadow-md transition duration-200"
+  >
+    Delete
+  </button>
+</td>
+
             </tr>
             <tr v-if="!products.data.length && !loading" class="text-center">
               <td colspan="8" class="p-4 text-gray-500">No products found.</td>
@@ -279,13 +272,13 @@ onMounted(() => {
       </div>
 
       <!-- Image Modal -->
-      <transition name="fade">
+    
         <div
           v-if="showModal"
           class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
           @click.self="closeModal"
         >
-          <transition name="zoom">
+    
             <div class="bg-white p-4 rounded-lg shadow-lg max-w-3xl w-full relative">
               <button
                 class="absolute top-2 right-2 text-black font-bold hover:text-red-500 transition duration-200"
@@ -297,9 +290,9 @@ onMounted(() => {
               <div class="text-center mb-2 font-semibold">{{ modalAlt }}</div>
               <img :src="modalImage" class="w-full h-auto object-contain rounded" />
             </div>
-          </transition>
+       
         </div>
-      </transition>
+      
 
     </div>
   </template>
