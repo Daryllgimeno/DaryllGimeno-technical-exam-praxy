@@ -35,11 +35,22 @@
         <label class="block font-semibold">Images</label>
         <input type="file" multiple @change="handleFiles" />
         <span v-if="errors.images" class="text-red-500 text-sm">{{ errors.images }}</span>
+        <p class="text-sm text-gray-500 mt-1">You can add or select multiple pictures.</p>
       </div>
 
       <div class="flex gap-2 flex-wrap">
-        <div v-for="(src, i) in previews" :key="i" class="w-24 h-24 border rounded overflow-hidden">
-          <img :src="src" class="object-cover w-full h-full" />
+        <div
+          v-for="(img, i) in previews"
+          :key="i"
+          class="w-24 h-24 border rounded overflow-hidden relative"
+        >
+          <img :src="img.src" class="object-cover w-full h-full" />
+          <button
+            @click="removeImage(i)"
+            class="absolute top-0 right-0 bg-red-500 text-white rounded-full px-1"
+          >
+            x
+          </button>
         </div>
       </div>
 
@@ -66,7 +77,7 @@ import axios from "axios";
 export default {
   props: {
     categories: Array,
-    product: Object, 
+    product: Object,
   },
   data() {
     return {
@@ -79,30 +90,45 @@ export default {
         images: [], 
       },
       previews: this.product.images
-        ? this.product.images.map(img => `/storage/${img}`)
+        ? this.product.images.map(img => ({ src: `/storage/${img}`, existing: true, path: img }))
         : [],
+      removedImages: [], 
       errors: {},
     };
   },
   methods: {
     nextStep() {
       this.errors = {};
-
       if (this.step === 1) {
         if (!this.form.name) this.errors.name = "Name is required";
         if (!this.form.category) this.errors.category = "Category is required";
         if (Object.keys(this.errors).length === 0) this.step = 2;
       } else if (this.step === 2) {
-
-        this.step = 3;
+        if (this.previews.length === 0) {
+          this.errors.images = "At least one image is required";
+        } else {
+          this.step = 3;
+        }
       }
     },
     prevStep() {
       this.step -= 1;
     },
     handleFiles(e) {
-      this.form.images = Array.from(e.target.files);
-      this.previews = this.form.images.map(file => URL.createObjectURL(file));
+      const newFiles = Array.from(e.target.files);
+      this.form.images = [...this.form.images, ...newFiles];
+      const newPreviews = newFiles.map(file => ({ src: URL.createObjectURL(file), existing: false, file }));
+      this.previews = [...this.previews, ...newPreviews];
+    },
+    removeImage(index) {
+      const img = this.previews[index];
+      if (img.existing) {
+        this.removedImages.push(img.path); 
+      } else {
+        const fileIndex = this.form.images.findIndex(f => f === img.file);
+        if (fileIndex !== -1) this.form.images.splice(fileIndex, 1);
+      }
+      this.previews.splice(index, 1);
     },
     async submitForm() {
       try {
@@ -112,12 +138,24 @@ export default {
         formData.append("description", this.form.description);
         formData.append("date_time", this.form.date_time);
 
-        this.form.images.forEach((img, i) => {
-          formData.append(`images[${i}]`, img);
-        });
+     
+        this.form.images.forEach(img => formData.append("images[]", img));
+
+     
+        this.removedImages.forEach(img => formData.append("removed_images[]", img));
+
+const savedImages = this.previews
+  .filter(p => p.existing)
+  .map(p => p.path);
+
+savedImages.forEach(img => formData.append("saved_images[]", img));
+
+
+this.removedImages.forEach(img => formData.append("removed_images[]", img));
+
 
         await axios.post(`/api/products/${this.product.id}?_method=PUT`, formData, {
-          headers: { "Content-Type": "multipart/form-data" }
+          headers: { "Content-Type": "multipart/form-data" },
         });
 
         alert("Product updated successfully!");
@@ -128,7 +166,8 @@ export default {
           console.error(error);
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
+

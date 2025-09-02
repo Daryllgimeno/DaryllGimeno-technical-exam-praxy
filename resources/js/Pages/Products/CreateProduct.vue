@@ -88,14 +88,14 @@ export default {
       this.errors = {};
 
       if (this.step === 1) {
-        // Step 1 validation
+   
         if (!this.form.name) this.errors.name = "Name is required";
         if (!this.form.category) this.errors.category = "Category is required";
         if (!this.form.description) this.errors.description = "Description is required";
 
         if (Object.keys(this.errors).length === 0) this.step = 2;
       } else if (this.step === 2) {
-        // Step 2 validation
+      
         if (!this.form.images || this.form.images.length === 0) {
           this.errors.images = "At least one image is required";
         } else {
@@ -109,10 +109,10 @@ export default {
  handleFiles(e) {
   const newFiles = Array.from(e.target.files);
 
-  // Append new files to existing ones
+ 
   this.form.images = [...this.form.images, ...newFiles];
 
-  // Update previews
+  
   this.previews = this.form.images.map(file => URL.createObjectURL(file));
 },
 
@@ -135,7 +135,7 @@ export default {
         alert("Product created successfully!");
         console.log(res.data);
 
-        // Reset form
+       
         this.step = 1;
         this.form = { name: "", category: "", description: "", date_time: "", images: [] };
         this.previews = [];

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -83,21 +84,41 @@ class ProductController extends Controller
     /**
      * Update a product
      */
-    public function update(ProductRequest $request, $id)
-    {
-        $product = Product::findOrFail($id);
-        $validated = $request->validated();
+ public function update(ProductRequest $request, $id)
+{
+    $product = Product::findOrFail($id);
+    $validated = $request->validated();
 
-        // Merge existing images with new uploaded images
-        $images = array_merge($product->images ?? [], $this->handleImages($request));
+    $savedImages = $request->input('saved_images', []); 
+    $removedImages = $request->input('removed_images', []); 
 
-        $product->update(array_merge($validated, ['images' => $images]));
-
-        return response()->json([
-            'message' => 'Product updated successfully',
-            'data' => $product
-        ]);
+    //
+    foreach ($removedImages as $img) {
+        if (Storage::exists('public/' . $img)) {
+            Storage::delete('public/' . $img);
+        }
     }
+
+ 
+    $newImages = [];
+    if ($request->hasFile('images')) {
+        foreach ($request->file('images') as $file) {
+            $newImages[] = $file->store('products', 'public');
+        }
+    }
+
+    
+    $allImages = array_merge($savedImages, $newImages);
+
+    
+    $product->update(array_merge($validated, ['images' => $allImages]));
+
+    return response()->json([
+        'message' => 'Product updated successfully',
+        'data' => $product
+    ]);
+}
+
 
     /**
      * Show a single product
